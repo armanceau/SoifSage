@@ -17,31 +17,29 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  console.log("Book Service - Incoming Request:", {
-    method: req.method,
-    url: req.url,
-    path: req.path,
-    headers: req.headers,
-    timestamp: new Date().toISOString(),
-  });
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("Book Service - Incoming Request:", {
+//     method: req.method,
+//     url: req.url,
+//     path: req.path,
+//     headers: req.headers,
+//     timestamp: new Date().toISOString(),
+//   });
+//   next();
+// });
 
 app.use(['/api/drinks'], drinkRoutes);
-//app.use(['/api/auth/register'], authRoutes);
 app.use(['/api/auth'], authRoutes);
 
 // Healthcheck endpoint
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
-    service: "book",
+    service: "drink",
     timestamp: new Date().toISOString(),
   });
 });
 
-// Route pour attraper toutes les requêtes non gérées
 app.use((req, res) => {
   console.log("Route non trouvée:", {
     method: req.method,
@@ -55,8 +53,6 @@ app.use((req, res) => {
   });
 });
 
-console.log("connexion à mongodb")
-// Connexion à MongoDB
 mongoose
   .connect(process.env.MONGO_URI || "mongodb://mongo:27017/soifsage", {
     useNewUrlParser: true,
@@ -66,7 +62,7 @@ mongoose
     console.log("Connecté à MongoDB");
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
-      console.log(`Service Book démarré sur le port ${PORT}`);
+      console.log(`Service démarré sur le port ${PORT}`);
     });
   })
   .catch((err) => {
