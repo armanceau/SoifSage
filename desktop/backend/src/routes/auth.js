@@ -1,10 +1,8 @@
 const express = require('express');
-const { register, login } = require('../controllers/authController'); // Utilise require
-
 const router = express.Router();
+const { register, login } = require('../controllers/authController');
 
-// Routes d'authentification
 router.post('/register', register);
 router.post('/login', login);
 
-module.exports = router; // Utilise module.exports au lieu de export default
+module.exports = router;

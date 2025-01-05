@@ -1,4 +1,6 @@
-FROM node:20
+FROM node:18
+
+RUN apt update && apt install -y curl netcat-traditional
 
 WORKDIR /app
 
@@ -6,6 +8,8 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY ./src .
 
-CMD ["npm", "run", "dev"]
+EXPOSE 3001
+
+CMD ["node", "server.js"]

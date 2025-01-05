@@ -1,27 +1,44 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  backend:
+  soifsage:
     build: .
     working_dir: /app
     ports:
-      - "5000:5000"
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - "3001:3001"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/authdb
-      - JWT_SECRET=mon_secret
-    depends_on:
-      - mongo
-    command: npm run dev
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo:27017/soifsage
+      - JWT_SECRET=monSecretSuperSecurise
+      - NODE_ENV=development
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Waiting for MongoDB...' &&
+        while ! nc -z mongo 27017; do sleep 1; done &&
+        echo 'Starting application...' &&
+        node server.js
+      "
+    healthcheck:
+      test: curl -f http://localhost:3001/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
   mongo:
-    image: mongo:latest
+    image: mongo:5.0
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - mongo-data:/data/db
+    command: --quiet
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
 volumes:
-  mongodb_data:
+  mongo-data:
