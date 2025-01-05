@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authenticateToken = require('../middlewares/authMiddleware');
 const {
   createDrink,
   getDrinks,
@@ -8,10 +9,10 @@ const {
   deleteDrink,
 } = require('../controllers/drinkController');
 
-router.post('/', createDrink);
-router.get('/', getDrinks);
-router.get('/:id', getDrinkById);
-router.put('/:id', updateDrink);
-router.delete('/:id', deleteDrink);
+router.post('/', authenticateToken, createDrink);
+router.get('/', authenticateToken, getDrinks);
+router.get('/:id', authenticateToken, getDrinkById);
+router.put('/:id', authenticateToken, updateDrink);
+router.delete('/:id', authenticateToken, deleteDrink);
 
 module.exports = router;
