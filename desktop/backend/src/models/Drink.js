@@ -25,6 +25,7 @@ const drinkSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 const Drink = mongoose.model('Drink', drinkSchema);

@@ -25,6 +25,7 @@ const addDrink = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };
+import AlcoholCalculator from '../models/AlcoholCalculator.js';
 
 const createDrink = async (req, res) => {
   try {
@@ -92,6 +93,29 @@ const deleteDrink = async (req, res) => {
   }
 };
 
+const getBAC = async (req, res) => {
+  try {
+    const { weight, gender } = req.query;
+    const userId = req.user.id;
+
+    if (!weight || !gender) {
+      return res.status(400).json({ message: 'Poids et genre requis' });
+    }
+
+    const drinks = await Drink.find({ userId });
+
+    if (!drinks.length) {
+      return res.status(200).json({ BAC: 0, message: "Aucune boisson enregistrée" });
+    }
+
+    const BAC = AlcoholCalculator.calculateBAC(drinks, weight, gender);
+
+    res.status(200).json({ BAC });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
 module.exports = {
   createDrink,
   getDrinks,
@@ -100,4 +124,5 @@ module.exports = {
   deleteDrink,
   addDrink,
   getDrinksByUserId,
+  getBAC
 };

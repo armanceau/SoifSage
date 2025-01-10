@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const drinkRoutes = require('./routes/drink');
 const drinkTemplateRoute = require('./routes/drinkTemplate')
 
+
 const app = express();
 
 if (!process.env.JWT_SECRET) {

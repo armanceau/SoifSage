@@ -9,11 +9,13 @@ const {
   updateDrink,
   deleteDrink,
   getDrinksByUserId
+  getBAC,
 } = require('../controllers/drinkController');
 
 router.post('/', authenticateToken, createDrink);
 router.post('/add', authenticateToken, addDrink);
 router.get('/', authenticateToken, getDrinks);
+router.get('/bac', authenticateToken, getBAC);
 router.get('/:id', authenticateToken, getDrinkById);
 router.get('/user/:id', authenticateToken, getDrinksByUserId);
 router.put('/:id', authenticateToken, updateDrink);
