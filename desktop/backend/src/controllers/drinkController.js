@@ -1,4 +1,5 @@
 const Drink = require('../models/Drink');
+const DrinkTemplate = require ('../models/DrinkTemplate');
 
 const addDrink = async (req, res) => {
   try {
@@ -10,9 +11,15 @@ const addDrink = async (req, res) => {
       return res.status(404).json({ message: 'Boisson introuvable' });
     }
 
+    console.log(userId)
+    
+
     const volume = customVolume || drinkTemplate.defaultVolume;
 
+    console.log(volume)
+
     const drink = await Drink.create({
+      name: drinkTemplate.name,
       volume,
       alcoholPercentage: drinkTemplate.alcoholPercentage,
       userId
