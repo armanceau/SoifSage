@@ -9,23 +9,18 @@ const addDrink = async (req, res) => {
     const drinkTemplate = await DrinkTemplate.findById(drinkTemplateId);
     if (!drinkTemplate) {
       return res.status(404).json({ message: 'Boisson introuvable' });
-    }
-
-    console.log(userId)
-    
+    }    
 
     const volume = customVolume || drinkTemplate.defaultVolume;
-
-    console.log(volume)
 
     const drink = await Drink.create({
       name: drinkTemplate.name,
       volume,
       alcoholPercentage: drinkTemplate.alcoholPercentage,
-      userId
+      userId: userId
     });
 
-    res.status(201).json({ message: 'Consommation enregistrée', drink });
+    res.status(201).json({ message: 'Consommation enregistrée' });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
