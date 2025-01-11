@@ -1,5 +1,29 @@
 const Drink = require('../models/Drink');
 
+const addDrink = async (req, res) => {
+  try {
+    const { drinkTemplateId, customVolume } = req.body;
+    const userId = req.user.id;
+
+    const drinkTemplate = await DrinkTemplate.findById(drinkTemplateId);
+    if (!drinkTemplate) {
+      return res.status(404).json({ message: 'Boisson introuvable' });
+    }
+
+    const volume = customVolume || drinkTemplate.defaultVolume;
+
+    const drink = await Drink.create({
+      volume,
+      alcoholPercentage: drinkTemplate.alcoholPercentage,
+      userId
+    });
+
+    res.status(201).json({ message: 'Consommation enregistrée', drink });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
 const createDrink = async (req, res) => {
   try {
     const { name, price, size } = req.body;
@@ -56,4 +80,5 @@ module.exports = {
   getDrinkById,
   updateDrink,
   deleteDrink,
+  addDrink,
 };
