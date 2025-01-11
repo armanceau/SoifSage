@@ -56,6 +56,22 @@ const getDrinkById = async (req, res) => {
   }
 };
 
+const getDrinksByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const drinks = await Drink.find({ userId });
+
+    if (!drinks || drinks.length === 0) {
+      return res.status(404).json({ message: 'Aucune boisson trouvée pour cet utilisateur' });
+    }
+
+    res.status(200).json(drinks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 const updateDrink = async (req, res) => {
   try {
     const updatedDrink = await Drink.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -83,4 +99,5 @@ module.exports = {
   updateDrink,
   deleteDrink,
   addDrink,
+  getDrinksByUserId,
 };
