@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const authRoutes = require('./routes/auth');
 const drinkRoutes = require('./routes/drink');
 const drinkTemplateRoute = require('./routes/drinkTemplate')
+const userRoutes = require('./routes/user')
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(bodyParser.json());
 app.use(['/api/drinks'], drinkRoutes);
 app.use(['/api/auth'], authRoutes);
 app.use(['/api/template'], drinkTemplateRoute);
+app.use(['/api/user'], userRoutes);
 
 // Healthcheck endpoint
 app.get("/health", (req, res) => {
@@ -54,26 +56,6 @@ app.use((req, res) => {
     method: req.method,
   });
 });
-
-const listRoutes = (app) => {
-  console.log('Routes actives :');
-  app._router.stack.forEach((middleware) => {
-    if (middleware.route) {
-      // Routes directes
-      console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()} ${middleware.route.path}`);
-    } else if (middleware.name === 'router') {
-      // Sous-routes dans des routeurs
-      middleware.handle.stack.forEach((handler) => {
-        if (handler.route) {
-          console.log(`${Object.keys(handler.route.methods).join(', ').toUpperCase()} ${handler.route.path}`);
-        }
-      });
-    }
-  });
-};
-
-// Appelle cette fonction après avoir configuré tes routes
-listRoutes(app);
 
 mongoose
   .connect(process.env.MONGO_URI || "mongodb://mongo:27017/soifsage", {

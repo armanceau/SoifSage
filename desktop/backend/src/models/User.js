@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     min: [18, 'Cette application est destinée à un public majeur.'],
   },
+  gender: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
