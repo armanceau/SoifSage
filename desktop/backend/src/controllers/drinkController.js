@@ -1,4 +1,30 @@
 const Drink = require('../models/Drink');
+const DrinkTemplate = require ('../models/DrinkTemplate');
+
+const addDrink = async (req, res) => {
+  try {
+    const { drinkTemplateId, customVolume } = req.body;
+    const userId = req.user.id;
+
+    const drinkTemplate = await DrinkTemplate.findById(drinkTemplateId);
+    if (!drinkTemplate) {
+      return res.status(404).json({ message: 'Boisson introuvable' });
+    }    
+
+    const volume = customVolume || drinkTemplate.defaultVolume;
+
+    const drink = await Drink.create({
+      name: drinkTemplate.name,
+      volume,
+      alcoholPercentage: drinkTemplate.alcoholPercentage,
+      userId: userId
+    });
+
+    res.status(201).json({ message: 'Consommation enregistrée' });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
 
 const createDrink = async (req, res) => {
   try {
@@ -30,6 +56,22 @@ const getDrinkById = async (req, res) => {
   }
 };
 
+const getDrinksByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const drinks = await Drink.find({ userId });
+
+    if (!drinks || drinks.length === 0) {
+      return res.status(404).json({ message: 'Aucune boisson trouvée pour cet utilisateur' });
+    }
+
+    res.status(200).json(drinks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 const updateDrink = async (req, res) => {
   try {
     const updatedDrink = await Drink.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -56,4 +98,6 @@ module.exports = {
   getDrinkById,
   updateDrink,
   deleteDrink,
+  addDrink,
+  getDrinksByUserId,
 };

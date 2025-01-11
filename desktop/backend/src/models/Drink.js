@@ -6,15 +6,20 @@ const drinkSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  price: {
+  // price: {
+  //   type: Number,
+  //   required: true,
+  //   min: 0,
+  // },
+  volume: {
     type: Number,
     required: true,
     min: 0,
   },
-  size: {
-    type: Number,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
-    min: 0,
   },
   createdAt: {
     type: Date,
